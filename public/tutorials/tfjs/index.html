@@ -1,0 +1,289 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Build a Chrome Extension to Filter out Toxic Words when surfing the internet using TensorFlow.JS</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id=""
+                  title="Build a Chrome Extension to Filter out Toxic Words when surfing the internet using TensorFlow.JS"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p>With so much information and content on the internet, it is often difficult to filter out all the toxic material amidst the healthy ones. Most big companies invest millions of $$ trying to build mechanisms that will filter toxic content from their platforms. In this tutorial, we&#39;ll build a text filtering chrome extension using TensorFlow.js. </p>
+<p>TensorflowJS js is a library for machine learning in Javascript. This means we can run Machine Learning Models right here in our browser. The model we will be using for this codelab is the Toxicity model. The toxicity model detects whether text contains toxic content such as threatening language, insults, obscenities, identity-based hate, or sexually explicit language. The model was trained on the civil comments dataset which contains ~2 million comments labelled for toxicity.</p>
+<h2 is-upgraded><strong>About this Codelab</strong></h2>
+<p>Duration: 28mins</p>
+<p>Written by: Muluh MG Godson</p>
+
+<p class="image-container"><img style="width: 509.48px" src="img/23def9c479083595.png"></p>
+<h2 class="checklist" is-upgraded><strong>What you&#39;ll learn</strong></h2>
+<ul class="checklist">
+<li>How to create a manifest for an extension</li>
+<li>How to load and use Tensorflow.js models</li>
+<li>How to get all text content from the currently open tab</li>
+<li>How to pass this text through the TensorFlowJS model for filtering</li>
+</ul>
+<p>This codelab is focused on TensorFlowJS and Chrome Extensions. Non-relevant concepts and code blocks are glossed over and are provided for you to simply copy and paste.</p>
+<h2 is-upgraded><strong>What you&#39;ll need</strong></h2>
+<ul>
+<li>A recent version of Chrome (74 or later)</li>
+<li>A text editor (VS Code, Sublime text etc)</li>
+<li>Basic Knowledge of JavaScript, and <a href="https://developer.chrome.com/devtools" target="_blank">Chrome DevTools</a>.</li>
+</ul>
+<p>Let&#39;s get started.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Getting Started" duration="3">
+        <p>Create a new folder that will contain all our files for this extension. </p>
+<p>I&#39;ve uploaded some starter files for use in this tutorial. These files are the TensorFlow.js library and the Toxicity library. Also included are some icons we&#39;ll be adding to our extension later on.</p>
+<p>You can download these files from my Google Drive by clicking on the button below:</p>
+<p><a href="https://drive.google.com/drive/folders/1S-UkuvnZpVRW9gpF1sgpfuG5zI6KPH73?usp=sharing" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download Starter Kit</paper-button></a></p>
+<p>After downloading the <code>assets</code> folder, copy it into the newly created folder you created for this extension.</p>
+<p>With this, we are ready to begin building our extension.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Creating a Manifest file" duration="5">
+        <p>In our extensions folder,  create a new file called <code>manifest.json</code> and open it up in your text editor of choice.</p>
+<p><code>manifest.json</code></p>
+<pre><code>{
+    &#34;name&#34;: &#34;Parental Guidance&#34;,
+    &#34;description&#34;: &#34;Filter toxic content from children using TensorFlow.js&#34;,
+    &#34;author&#34;: &#34;Muluh MG Godson&#34;,
+    &#34;version&#34;: &#34;1.0&#34;,
+    &#34;manifest_version&#34;: 2
+}</code></pre>
+<p>Copy the code above and paste it in your <code>manifest.json</code> file. This file is what lets Chrome know it is an extension and describes the contents of the extension. We will also use the manifest file to request permissions such as permissions to access the currently opened tab etc. </p>
+<p>In the code above, we have defined some values, the most important which are:</p>
+<ul>
+<li>name: The name of our extension. You can name it whatever you like.</li>
+<li>description: A description of what our extension is above.</li>
+<li>version: The version of our extension. </li>
+<li>manifest_version: This specifies the version of manifest.json used by the extension.</li>
+</ul>
+<aside class="special"><p><strong>TIP:</strong> We are using manifest_version 2 so as to be able to execute Javascript functions used by TensorFlowJS such as <code>eval()</code> which are blocked in manifest_version 3.</p>
+</aside>
+<h2 is-upgraded><strong>Adding our Extension to Chrome</strong></h2>
+<p>At this stage, we can already add our extension to Google Chrome. To do this,</p>
+<ol type="1" start="1">
+<li>Open the Extension Management page by navigating to <code>chrome://extensions</code>. </li>
+</ol>
+<ul>
+<li>Alternatively, open this page by clicking on the Extensions menu button and selecting <strong>Manage Extensions</strong> at the bottom of the menu.</li>
+</ul>
+<ol type="1" start="2">
+<li>Enable Developer Mode by clicking the toggle switch next to <strong>Developer mode</strong>.</li>
+<li>Click the <strong>Load unpacked</strong> button and select the folder you created earlier that has the <code>manifest.json</code> file.</li>
+</ol>
+<p>If you have done this correctly, you should see your extension listed.</p>
+<p class="image-container"><img style="width: 601.70px" src="img/f9f7f5a35bc9aa46.png"></p>
+<p>Great Job. The extension is now installed, but it doesn&#39;t do anything as of now because we haven&#39;t told it what to do yet. Let&#39;s add some functionality to it in the next section.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adding functionality to our manifest.json file" duration="5">
+        <p>We are going to add a service worker to our extension that will enable it to run in the background of our Chrome browser. We achieve this by adding a background script to our manifest which tells the extension which files to reference and how the file should behave. To do this, we create a new file <code>background.js</code> in our extensions folder and add it to our manifest.json file.</p>
+<p><code>manifest.json</code></p>
+<pre><code>{
+    &#34;name&#34;: &#34;Parental Guidance&#34;,
+    &#34;description&#34;: &#34;Filter toxic content from children using TensorFlow.js&#34;,
+    &#34;author&#34;: &#34;Muluh MG Godson&#34;,
+    &#34;version&#34;: &#34;1.0&#34;,
+    &#34;manifest_version&#34;: 2,
+    &#34;background&#34;: {
+        &#34;service_worker&#34;: &#34;background.js&#34;
+    }
+}</code></pre>
+<p>In our <code>background.js</code> file, add the following code:</p>
+<p><code>background.js</code></p>
+<pre><code>chrome.runtime.onInstalled.addListener(() =&gt; {
+    console.log(&#39;Our background script is running.&#39;);
+});</code></pre>
+<p>This code just prints to our service worker console. Head over to chrome in the Extensions Management and click the refresh icon to refresh our extension so it can read the changes in our <code>manifest.json</code> file. When you refresh, you will see the service worker detected and running. If you click on it, you will see our text being printed in its console.</p>
+<p class="image-container"><img style="width: 601.70px" src="img/f7ec57edaeb9243a.png"></p>
+<p>In the console of our service worker, you should see the text printed as in the screenshot below.</p>
+<p class="image-container"><img style="width: 601.70px" src="img/a9dd4ae56423681.png"></p>
+<p>Create another file called filter.js in our extensions folder. This file will hold all the logic for filtering out the words. We&#39;ll add it along with all the other files to our manifest.json file.</p>
+<h3 is-upgraded><code>manifest.json</code></h3>
+<pre><code>{
+    &#34;name&#34;: &#34;Parental Guidance&#34;,
+    &#34;description&#34;: &#34;Filter toxic content from children using TensorFlow.js&#34;,
+    &#34;author&#34;: &#34;Muluh MG Godson&#34;,
+    &#34;version&#34;: &#34;1.0&#34;,
+    &#34;manifest_version&#34;: 2,
+    &#34;icons&#34;: { 
+        &#34;16&#34;: &#34;./assets/icons/16.png&#34;,
+        &#34;48&#34;: &#34;./assets/icons/48.png&#34;,
+       &#34;128&#34;: &#34;./assets/icons/128.png&#34; },
+    &#34;background&#34;: {
+        &#34;service_worker&#34;: &#34;background.js&#34;
+    },
+    &#34;content_scripts&#34;: [
+        {
+            &#34;matches&#34;: [
+                &#34;&lt;all_urls&gt;&#34;
+            ],
+            &#34;js&#34;: [&#34;assets/tfjs.js&#34;, &#34;assets/toxicity.js&#34;, &#34;filter.js&#34;]
+        }
+    ],
+    &#34;content_security_policy&#34;: &#34;script-src &#39;self&#39; &#39;unsafe-eval&#39;; object-src &#39;self&#39;&#34;
+    
+}</code></pre>
+<p>Copy and paste the code above to your manifest.json file. </p>
+<ul>
+<li>The <code>icons</code> parameter tells the extension where our logos are. </li>
+<li>The <code>content_scripts</code> parameter tells chrome to let this extension run our JS files ( <code>tfjs.js , toxicity.js and filter.js</code> ) on all web pages that are opened using the directive <code><all_urls></code>.</li>
+<li>The <code>content_security_policy</code> parameter tells Chrome Browser to run these scripts without blocking some of its functions.</li>
+</ul>
+<p>With this, we can proceed to add our toxic filtering logic to the <code>filter.js</code> file.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adding functionality for the Toxic Word Filtering Logic" duration="15">
+        <p>In our filter.js file, we are going to begin by grabbing all text on the webpage.</p>
+<h3 is-upgraded><code>filter.js</code></h3>
+<pre><code>let $allText = document.body.innerText;
+let $allSentences = $allText.split(&#34; &#34;);
+let $deleteWords = []</code></pre>
+<p>The first line grabs all the text on our the current web page opened. </p>
+<p>The second line seperates this chunk of text into individual phrases and stores it as an array. An array is basically a container to hold each of our phrases. The third line initializes an empty array we&#39;ll be using later.</p>
+<p>The next step is to run each sentence through the Toxicity model using TensorFlow.js. We don&#39;t need to import any of these libraries because we already indicated them in our <code>manifest.json</code> file.</p>
+<h3 is-upgraded><code>filter.js</code></h3>
+<pre><code>let $allText = document.body.innerText;
+let $allSentences = $allText.split(&#34; &#34;);
+let $deleteWords = []
+
+const threshold = 0.9;
+toxicity.load(threshold).then(model =&gt; {
+  $allSentences.forEach(sentence =&gt; {
+    model.classify(sentence).then(predictions =&gt; {
+      predictions.forEach(prediction =&gt; {
+        if(prediction.results[0].match){
+          $deleteWords.push(sentence)
+          hideWord(sentence);
+        }    
+      }); 
+    })
+  })
+});</code></pre>
+<p>The threshold is the minimum confidence level for which we determine if a sentence is toxic or not. We then loop through each sentence and pass it through the Toxicity model. If a match occurs for any of the toxic labels, we add the sentence to our <code>$deleteWords</code> array and pass it through the <code>hideWord()</code> function.</p>
+<h3 is-upgraded><code>filter.js</code></h3>
+<pre><code>let $allText = document.body.innerText;
+let $allSentences = $allText.split(&#34; &#34;);
+let $deleteWords = []
+
+const threshold = 0.9;
+toxicity.load(threshold).then(model =&gt; {
+  $allSentences.forEach(sentence =&gt; {
+    model.classify(sentence).then(predictions =&gt; {
+      predictions.forEach(prediction =&gt; {
+        if(prediction.results[0].match){
+          $deleteWords.push(sentence)
+          hideWord(sentence);
+        }    
+      }); 
+    })
+  })
+});
+
+function hideWord(sentence) {
+    let elems = document.querySelectorAll(&#34;body *&#34;);
+    let span = &#34;&lt;span style=&#39;display: none !important;&#39;&gt;&#34; + sentence + &#34;&lt;/span&gt;&#34;;
+    for (let x = 0; x &lt; elems.length; x++) {
+      elems[x].innerHTML = elems[x].innerHTML.split(sentence).join(span);
+    }
+}</code></pre>
+<p>The <code>hideWord()</code> function takes the sentence we passed to it and searches through the webpage looking for that sentence. When its found, it wraps a <code><span></code> around it. The style of this span is set to <code>display: none</code> which is what hides (filters) the sentence from the webpage. You can try out different things, maybe instead of hiding the text, you can color it red and add a line through it, the possibilities are endless. </p>
+<p>Finally, to add a few perks just to see which words the Toxicity model thought are toxic, we are just going to add some few lines to output it to our console tab (Right Click on the webpage and click Inspect)  in Chrome Dev Tools.</p>
+<h3 is-upgraded><code>filter.js</code></h3>
+<pre><code>let $allText = document.body.innerText;
+let $allSentences = $allText.split(&#34; &#34;);
+let $deleteWords = []
+
+const threshold = 0.9;
+toxicity.load(threshold).then(model =&gt; {
+  $allSentences.forEach(sentence =&gt; {
+    model.classify(sentence).then(predictions =&gt; {
+      predictions.forEach(prediction =&gt; {
+        if(prediction.results[0].match){
+          $deleteWords.push(sentence)
+          hideWord(sentence);
+        }    
+      }); 
+    })
+  })
+});
+
+function hideWord(sentence) {
+    let elems = document.querySelectorAll(&#34;body *&#34;);
+    let span = &#34;&lt;span style=&#39;display: none !important;&#39;&gt;&#34; + sentence + &#34;&lt;/span&gt;&#34;;
+    for (let x = 0; x &lt; elems.length; x++) {
+      elems[x].innerHTML = elems[x].innerHTML.split(sentence).join(span);
+    }
+}
+
+console.log(&#34;Total Sentences: &#34; + $allSentences.length)
+console.log(&#34;Toxic content: &#34;)
+console.log($deleteWords);</code></pre>
+<p>This will output the total number of sentences on the wep page opened and then the list of sentences that were classified as toxic.</p>
+<p>Now head over to chrome and refresh our extension, then open up any webpage and check the console tab. I use the website <a href="https://www.rypeapp.com/blog/english-swear-words" target="_blank">English Swear Words</a> for my testing. </p>
+<p>The results I got were: </p>
+<p><strong>A Screenshot of the Website without Filtering.</strong></p>
+<p class="image-container"><img style="width: 601.70px" src="img/24cda59ee9cf726b.png"></p>
+<p><strong>A Screenshot after Enabling the Extension</strong></p>
+<p class="image-container"><img style="width: 601.70px" src="img/52947572e84d8dd.png"></p>
+<p>If you check in the console tab you should see the words that are being removed from the webpage. </p>
+<p class="image-container"><img style="width: 467.00px" src="img/acb19422b7eb4ab3.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Congratulations" duration="0">
+        <p>Congratulations, you&#39;ve successfully built your first toxic filtering chrome extension. </p>
+<p>You added a manifest to enable it to be installed as an extension, and you added a service worker to ensure that your extension is always running in the background. </p>
+<p>I will love to see what you make, you can post your screenshots on Twitter and tag me <strong>@muluhgodson</strong> and use the hashtag <strong>#MadeWithTFJS</strong></p>
+<h2 is-upgraded><strong>What&#39;s next?</strong></h2>
+<p>Our extension currently passes each word on our webpage via the Toxicity model. The idea of how the toxicity model works is in the context of the phrase it is accessing. Passing single words may not have much context. We can change this by changing how we split the text we grab from the webpage. We can do this by changing the second line in our filter.js file.</p>
+<h3 is-upgraded><code>filter.js</code></h3>
+<pre><code>let $allText = document.body.innerText;
+let $allSentences = $allText.split(&#34;.&#34;);
+let $deleteWords = []</code></pre>
+<p>Above, we have indicated that the text be split by full stops. This means we will grab each sentence instead of words. You can experiment with other ways of splitting your text to see which gives you the best results. </p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

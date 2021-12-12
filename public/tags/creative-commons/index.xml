@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Creative Commons on MG&#39;s Mind</title>
+    <link>/tags/creative-commons/</link>
+    <description>Recent content in Creative Commons on MG&#39;s Mind</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>MG</copyright>
+    <lastBuildDate>Sun, 12 Dec 2021 00:00:00 +0100</lastBuildDate>
+    
+	<atom:link href="/tags/creative-commons/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Introduce Yourself</title>
+      <link>/introduce-yourself/</link>
+      <pubDate>Sun, 12 Dec 2021 00:00:00 +0100</pubDate>
+      
+      <guid>/introduce-yourself/</guid>
+      <description>Photo by Faris Mohammed on Unsplash
+    Growing up I read a lot of my dad&amp;rsquo;s books, especially those on Astronomy. I was in love with NASA, spacecrafts, star trek&amp;hellip;all that good stuff. It was my dream to go to space someday and piss on the moon or something.
+ Unknown photo credit via Gizmodo
+    Ah! the good ol&amp;rsquo; days. We had this desktop computer my dad bought and this piece of machinery was awesome to look at.</description>
+    </item>
+    
+  </channel>
+</rss>

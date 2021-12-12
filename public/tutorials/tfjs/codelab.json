@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2021-10-29T07:16:26Z",
+  "id": "",
+  "duration": 28,
+  "title": "Build a Chrome Extension to Filter out Toxic Words when surfing the internet using TensorFlow.JS",
+  "authors": "Muluh MG Godson",
+  "summary": "In this codelab, you'll build a chrome extension that can filter out toxic words from the pages you visit when you are navigating the web. We will use the Toxicity Model from TensorFlow.js.",
+  "source": "1pDIKYVhIc2sVwNe9S3GzU9Z1AHTJk9vVzM4ABB323R8",
+  "theme": "web",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "web"
+  ],
+  "tags": [],
+  "extra": {
+    "": ""
+  },
+  "url": ""
+}
