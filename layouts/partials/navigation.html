@@ -1,0 +1,55 @@
+<nav class="navbar is-transparent">
+    <div class="navbar-brand">
+      <div class="navbar-burger" data-target="mynav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    
+    <div id="mynav" class="navbar-menu">
+      <div class="navbar-start">
+        {{ range .Site.Menus.main.ByWeight }}
+        <a class="navbar-item" href="{{ .URL }}">
+            {{ .Name }}
+        </a>
+        {{ end }}
+        </div>
+      </div>
+  
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="field is-grouped">
+            <p class="control">
+                {{ if .Site.Params.rss }}
+                    <a class="navbar-item button" target="_blank" href="{{ .Site.BaseURL }}index.xml" aria-label="RSS"><i class="fa fa-rss" aria-hidden="true"></i></a>
+                {{ end }}
+            </p>
+            <p class="control">
+                {{ with .Site.Params.github }}
+                <a class="navbar-item button" target="_blank" data-hint="Github" aria-label="Github" href="{{ . }}" rel="me">
+                    <i class="fa fa-github-alt" aria-hidden="true"></i>
+                </a>
+                {{ end }}
+            </p>
+            <p class="control">
+                {{ with .Site.Params.linkedin }}
+                <a class="navbar-item button" target="_blank" data-hint="LinkedIn" aria-label="LinkedIn" href="{{ . }}" rel="me">
+                    <i class="fa fa-linkedin" aria-hidden="true"></i>
+                </a>
+                {{ end }}
+            </p>
+            <p class="control">
+                {{ with .Site.Params.email }}
+                <a class="navbar-item button" data-hint="Email" aria-label="Send an Email" href="mailto:{{ . }}">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                </a>
+                {{ end }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+

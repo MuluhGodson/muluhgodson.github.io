@@ -1,0 +1,52 @@
+baseurl: "/"
+title: MG's Mind
+theme: 
+languageCode: en-us
+copyright: MG
+
+markup:
+  highlight:
+    codeFences: true
+    guessSyntax: false
+    hl_Lines: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: true
+    tabWidth: 2
+
+author:
+  name: Muluh MG Godson
+  profile: "https://www.linkedin.com/in/muluh-mg-godson"
+
+taxonomies:
+  tag: tags
+
+params:
+  mainSections:
+    - post
+  intro: true
+  headline: Muluh MG Godson
+  description: I have served, I will be of Service.
+  github: "https://github.com/MuluhGodson"
+  linkedin: "https://www.linkedin.com/in/muluh-mg-godson"
+  email: "godsonmuluh@gmail.com"
+  opengraph: true
+  shareTwitter: true
+  rss: true
+  shareFacebook: true
+  shareLinkedIn: true
+  dateFormat: "Mon, Jan 2, 2006"
+  readingTime: true
+  readingTimeText: "Reading time:"
+
+
+permalinks:
+  post: "/:slug/"
+
+menu:
+  main:
+    - name: Blog
+      url: /
+      weight: 1
+
